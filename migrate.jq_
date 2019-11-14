@@ -1,0 +1,10 @@
+.entities[].start_at
+|.entities[]
+|"twodo://x-callback-url/add?"
++"task="+(.title | sub("\"";"\""))
++"&start="+ ( .start_at / 1000 | strftime("%Y-%m-%d 00:00") )
++(if .start_at == 0 then "" else "&dueTime=" + ( .start_at / 1000 | strftime("%Y-%m-%d 00:00") ) end)
++"&note="+(if .notes == null then "" else (.notes| sub("\"";"\"")) end)
++"&priority="+(.priority|tostring)
++"&forList=Home"
++(if .repeater == null then "" else "&repeat=4" end)
