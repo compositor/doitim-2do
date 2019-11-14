@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # uncomment to debug
-# set -x
+set -x
 set -e
 set -o pipefail
 
@@ -25,7 +25,7 @@ cat migrate.jq_ > data/migrate.jq
 grab_page https://i.doit.im/api/resources_init data/resources.json
 # generate
 # +(if .context == "e1c2b3f0-4081-11e4-8894-51e3df408535" then "&tags=Computer" else "" end)
-jq '.resources.contexts[]|.uuid+.name' data/resources.json | sed -E 's/.(.{36})(.*)./+(if .context == "\1"  then "\&tags=\2" else "" end)/g' >> data/migrate.jq
+jq '.resources.contexts[]|.uuid+.name' data/resources.json | sed -E 's/.(.{36})(.*)./+(if .context == "\1"  then "\&tags=\2,@SECTION@" else "" end)/g' >> data/migrate.jq
 # generate
 # +(if .project == "f013151f-7c19-4e30-8d96-48ca600566cb" then "&forParentName=benefits" else "" end)
 jq '.resources.projects[]|.uuid+.name' data/resources.json | sed -E 's/.(.{36})(.*)./+(if .project == "\1"  then "\&forParentName=\2" else "" end)/g' >> data/migrate.jq
@@ -48,7 +48,7 @@ do
   grab_page "https://i.doit.im/api/tasks/${section}" data/${section}.json
   # This can be added to slow down digestion
   #| sed -e "s/$/ \&\& sleep 1 /g"
-  jq -f ./data/migrate.jq --argjson today `date '+%s'`000 data/${section}.json | sed -e "s/^/open /g"  >> data/move.txt
+  jq -f ./data/migrate.jq data/${section}.json | sed -e "s/^/open /g" | sed -e "s/@SECTION@/${section}/g"  >> data/move.txt
 done
 
 echo "Importing...."

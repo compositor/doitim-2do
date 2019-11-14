@@ -19,6 +19,8 @@ Scripts were used for ad-hoc one time migration, so they intentionally do not su
 
 Overall, follow the script code to make sense of what's being migrated and how.
 
+For easier reconciliation, all non-recurring tasks are in Home realm, all repeating tasks are in Work realm (and you need to manually fix them). Tasks are also annotated with tags (inbox, someday... so to easier track), this is meant to be for migration period only.
+
 # How to use
 
 * You need `jq`, `curl` and obviously 2doapp installed.
